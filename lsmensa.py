@@ -44,22 +44,32 @@ def updatexml(url):
 def printList(foodlist, mensa, listall=False):
     #@TODO: flexible width
     datestamp = datetime(year=1990, month=1, day=1)
-    print "%-59s %5s %5s %1s %1s %1s" % ("Heute in der Mensa " + mensa, "Stud", "Norm", "V", "M", "R")
+    print "%-59s %5s %5s %-10s" % ("Heute in der Mensa " + mensa, "Stud", "Norm", "Typ")
     for essen in foodlist:
         if (datetime.date(datetime.now()) == datetime.date(essen.date)) or listall == True:
             if listall == True and datestamp != essen.date:
                 print
                 print datetime.date(essen.date)
-            print "%-59s %5.2f %5.2f %1s %1s %1s" \
-            % (essen.name, int(essen.price_student) / 100.0, int(essen.price_normal) / 100.0, "X" if essen.veggie else "", "X" if essen.muslim else "", "X" if essen.rind else "")
+            print "%-59s %5.2f %5.2f %-10s" \
+            % (essen.name, int(essen.price_student) / 100.0, int(essen.price_normal) / 100.0, essen.foodtype)
             datestamp = essen.date
 
 class Essen(object):
     def __init__(self, knoten):
         if knoten.nodeName == "Mensaessen":
-            self.veggie = True if knoten.getAttribute("vegetarisch") == "true" else False
-            self.muslim = True if knoten.getAttribute("moslem") == "true" else False
-            self.rind = True if knoten.getAttribute("rind") == "true" else False
+            try:
+                self.foodtype = knoten.getElementsByTagName("token")[0].firstChild.data
+            except:
+                self.foodtype = ""
+            '''
+            self.veggie = True if foodtype == "Vegetarisch" else False
+            self.vegan  = True if foodtype == "Vegan" else False
+            self.chicken= True if foodtype == "Gefluegel" else False
+            self.pork   = True if foodtype == "Schwein" else False
+            self.rind   = True if foodtype == "Rind" else False
+            self.fish   = True if foodtype == "Fisch" else False
+            self.deer   = True if foodtype == "Wild" else False
+            '''
             try:
                 self.name = knoten.getElementsByTagName("beschreibung")[0].firstChild.data
             except:
