@@ -41,18 +41,17 @@ def updatexml(url):
     file.close()
     return dom
 
-def printList(foodlist, mensa, listall=False):
+def printList(foodlist, mensa):
     #@TODO: flexible width
     datestamp = datetime(year=1990, month=1, day=1)
     print "%-59s %5s %5s %-10s" % ("Heute in der Mensa " + mensa, "Stud", "Norm", "Typ")
     for essen in foodlist:
-        if (datetime.date(datetime.now()) == datetime.date(essen.date)) or listall == True:
-            if listall == True and datestamp != essen.date:
-                print
-                print datetime.date(essen.date)
-            print "%-59s %5.2f %5.2f %-10s" \
+        if datestamp != essen.date:
+            print
+            print datetime.date(essen.date)
+        print "%-59s %5.2f %5.2f %-10s" \
             % (essen.name, int(essen.price_student) / 100.0, int(essen.price_normal) / 100.0, essen.foodtype)
-            datestamp = essen.date
+        datestamp = essen.date
 
 class Essen(object):
     def __init__(self, knoten):
@@ -120,4 +119,9 @@ if __name__ == '__main__':
         food_object = Essen(essen)
         #print food_object
         essensliste.append(food_object)
-    printList(essensliste, options.mensa, options.la)  
+
+    if options.la:
+        printliste = filter(lambda x: datetime.date(x.date) >= datetime.date(datetime.now()), essensliste) #  filter old meals
+    else:
+        printliste = filter(lambda x: datetime.date(x.date) == datetime.date(datetime.now()), essensliste)
+    printList(printliste, options.mensa)  
