@@ -6,7 +6,6 @@ Created on 25.09.2012
 @author: Christoph Gerneth
 @contact: if1184@haw-ingolstadt.de
 @license: CC-BY-SA
-@version: 0.2
 list Mensa-Menues for Studentenwerk Erlangen-Nuernberg
 
 Data by Bytewerk Ingolstadt - http://namnam.bytewerk.org/
