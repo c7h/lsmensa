@@ -48,7 +48,7 @@ def printList(foodlist, mensa):
     for essen in foodlist:
         if datestamp != essen.date:
             print
-            print datetime.date(essen.date)
+            print essen.date
         print "%-59s %5.2f %5.2f %-10s" \
             % (essen.name, int(essen.price_student) / 100.0, int(essen.price_normal) / 100.0, essen.foodtype)
         datestamp = essen.date
@@ -81,8 +81,9 @@ class Essen(object):
                 self.price_normal = knoten.getElementsByTagName("normalerPreis")[0].firstChild.data
             except:
                 self.price_normal = "0"
-            date = knoten.parentNode.getElementsByTagName("tag")[0].firstChild.data
-            self.date = datetime.strptime(date, "%Y-%m-%d")
+            date_node = knoten.parentNode.getElementsByTagName("tag")[0].firstChild.data
+            date = datetime.strptime(date_node, "%Y-%m-%d")
+            self.date = datetime.date(date)
             
     def __repr__(self):
         return "%s: %s fuer %.2f Euro" % (datetime.strftime(self.date, "%A, %d.%m"), self.name, int(self.price_student) / 100.0)
@@ -95,6 +96,8 @@ if __name__ == '__main__':
     parser.add_option("-a", "--all", action="store_true", help="list all", dest="la", default=False)
     
     (options, args) = parser.parse_args()
+
+    today = datetime.date(datetime.now())
     
     xml = {"Ingolstadt" : "http://namnam.bytewerk.org/files/Studiwerk-Erlangen-Nuernberg-Mensa-IN.xml",
            "Erlangen_Sued" : "http://namnam.bytewerk.org/files/Studiwerk-Erlangen-Nuernberg-Mensa-Sued-Erlangen.xml",
@@ -121,7 +124,7 @@ if __name__ == '__main__':
         essensliste.append(food_object)
 
     if options.la:
-        printliste = filter(lambda x: datetime.date(x.date) >= datetime.date(datetime.now()), essensliste) #  filter old meals
+        printliste = filter(lambda x: x.date >= today, essensliste) #  filter old meals
     else:
-        printliste = filter(lambda x: datetime.date(x.date) == datetime.date(datetime.now()), essensliste)
+        printliste = filter(lambda x: x.date == today, essensliste)
     printList(printliste, options.mensa)  
