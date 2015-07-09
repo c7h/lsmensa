@@ -30,6 +30,8 @@ import urllib2
 from datetime import datetime
 import sys
 
+today = datetime.date(datetime.now())
+
 def updatexml(url):
     #@TODO: check for new updates only - write tempfile, so no internetaccess is required
     try:
@@ -41,16 +43,17 @@ def updatexml(url):
     file.close()
     return dom
 
-def printList(foodlist, mensa):
+def printList(foodlist, description=""):
     #@TODO: flexible width
     datestamp = datetime(year=1990, month=1, day=1)
-    print "%-59s %5s %5s %-10s" % ("Heute in der Mensa " + mensa, "Stud", "Norm", "Typ")
+    print "%-59s %5s %5s %-10s" % (description, "Stud", "Norm", "Typ") #  header
     for essen in foodlist:
         if datestamp != essen.date:
-            print
+            if not foodlist.index(essen) == 0:
+                print #  extra line before following days
             print essen.date
         print "%-59s %5.2f %5.2f %-10s" \
-            % (essen.name, int(essen.price_student) / 100.0, int(essen.price_normal) / 100.0, essen.foodtype)
+            % (essen.name, int(essen.price_student) / 100.0, int(essen.price_normal) / 100.0, essen.foodtype)        
         datestamp = essen.date
 
 class Essen(object):
@@ -97,7 +100,7 @@ if __name__ == '__main__':
     
     (options, args) = parser.parse_args()
 
-    today = datetime.date(datetime.now())
+
     
     xml = {"Ingolstadt" : "http://namnam.bytewerk.org/files/Studiwerk-Erlangen-Nuernberg-Mensa-IN.xml",
            "Erlangen_Sued" : "http://namnam.bytewerk.org/files/Studiwerk-Erlangen-Nuernberg-Mensa-Sued-Erlangen.xml",
@@ -124,7 +127,8 @@ if __name__ == '__main__':
         essensliste.append(food_object)
 
     if options.la:
-        printliste = filter(lambda x: x.date >= today, essensliste) #  filter old meals
+        toprint = filter(lambda x: x.date >= today, essensliste) #  filter old meals
+        printList(toprint, "alle Menues in %s" % options.mensa)
     else:
-        printliste = filter(lambda x: x.date == today, essensliste)
-    printList(printliste, options.mensa)  
+        toprint = filter(lambda x: x.date == today, essensliste)
+        printList(toprint, "heute in der Mensa %s"%options.mensa)  
