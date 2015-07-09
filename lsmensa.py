@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 '''
 Created on 25.09.2012
 
@@ -66,7 +67,7 @@ class Essen(object):
             '''
             self.veggie = True if foodtype == "Vegetarisch" else False
             self.vegan  = True if foodtype == "Vegan" else False
-            self.chicken= True if foodtype == "Gefluegel" else False
+            self.chicken= True if foodtype == "Geflügel" else False
             self.pork   = True if foodtype == "Schwein" else False
             self.rind   = True if foodtype == "Rind" else False
             self.fish   = True if foodtype == "Fisch" else False
@@ -89,7 +90,7 @@ class Essen(object):
             self.date = datetime.date(date)
             
     def __repr__(self):
-        return "%s: %s fuer %.2f Euro" % (datetime.strftime(self.date, "%A, %d.%m"), self.name, int(self.price_student) / 100.0)
+        return "%s: %s für %.2f Euro" % (datetime.strftime(self.date, "%A, %d.%m"), self.name, int(self.price_student) / 100.0)
 
 
 if __name__ == '__main__':
@@ -128,7 +129,7 @@ if __name__ == '__main__':
 
     if options.la:
         toprint = filter(lambda x: x.date >= today, essensliste) #  filter old meals
-        printList(toprint, "alle Menues in %s" % options.mensa)
+        printList(toprint, "alle Menüs in %s" % options.mensa)
     else:
         toprint = filter(lambda x: x.date == today, essensliste)
         printList(toprint, "heute in der Mensa %s"%options.mensa)  
